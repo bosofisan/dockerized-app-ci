@@ -1,13 +1,11 @@
 # Dockerized Node.js App with CI/CD & Kubernetes Deployment
-- A complete, production-style DevOps workflow demonstrating:
-- Containerization with Docker
-- Continuous Integration with GitHub Actions
-- Image registry with Docker Hub
-- Continuous Deployment to Kubernetes
-- Fully declarative YAML manifests
-- Automated build → push → deploy pipeline
+This project showcases a complete DevOps delivery pipeline, from containerization to automated builds to kubernetes deployment.
+It demonstrates practical experience with Docker, GitHub Actions, Docker Hub, and Kubernetes manifests running on a local cluster. 
 
+## Overview
+The application is a lightweight Node.js service packaged as a Docker image, automatically built and pushed via GitHub Actions, and deployed to a Kubernetes cluster using declarative YAML configuration. 
 
+This workflow mirrors a modern cloud-native delivery model used by Platform, DevOps, and Cloud Engineering teams worldwide. 
 
 ## Architecture
 
@@ -34,7 +32,7 @@
         └────────────────────┘
 
 ## Tech Stack
-- Node.js – lightweight web app
+- Node.js – application runtime
 - Docker – build & containerize
 - GitHub Actions – CI pipeline
 - Docker Hub – container registry
@@ -42,14 +40,14 @@
 - YAML – infrastructure as code
 
 ## CI Pipeline (GitHub Actions)
-Every push to main triggers:
-1. Checkout repo
-2. Build Docker image
-3. Authenticate to Docker Hub
-4. Push latest image tag
-5. Kubernetes downloads the new image on next deploy
+The CI workflow automatically triggers every time code is pushed to the main branch: 
+1. GitHub Actions checks out the repo
+2. Docker Buildx builds the image
+3. Github Actions authenticates with Docker Hub
+4. The image is pushed with the tag: ``` bosofisan/dockerized-app-ci:latest ```
+5. Kubernetes pulls the updated image on redeploy
 
-.github/workflows/ci.yml
+## CI Pipeline (``` .github/workflows/ci.yml ```)
 ```yaml
 name: CI Pipeline
 
@@ -131,22 +129,54 @@ spec:
       nodePort: 30080
 ```
 
-## Run the App Locally on Kubernetes
-```yaml
+## Run App Locally
+Apply Kubernetes manifests: 
+```bash
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
+``` 
+Verify:
+```bash
 kubectl get pods
+kubectl get svc
+```
+Post-forward service to local machine:
+```bash
 kubectl port-forward service/dockerized-app-service 3000:3000
 ```
 
 Visit: http://localhost:3000
 
+## Project Structure 
+```bash
+project-root/
+│
+├── .github/workflows/
+│   └── ci.yml
+├── k8s/
+│   ├── deployment.yaml
+│   └── service.yaml
+├── src/
+│   └── app.js
+├── Dockerfile
+└── README.md
+```
+
 ## Key Learnings
-- Automated Docker image builds using GitHub Actions
-- Kubernetes Deployments + Services for container orchestration
-- Resource requests/limits to prevent noisy-neighbor issues
-- Container registry authentication via GitHub Secrets
-- End-to-end CI/CD using industry-standard tooling
+- Built a production-grade CI pipeline using GitHub Actions
+- Implemented containerization via Docker
+- Stored images securely in Docker Hub
+- Deployed to Kubernetes using declarative IaC
+- Configured resource requests/limits to prevent noisy-neighbor issue 
+- Practiced real-world DevOps workflows from code -> container -> deploy
+
+## Future Enhancements 
+- Add Helm chart packaging 
+- Implement GitOps with ArgoCD
+- Add automated tests into CI workflow
+- Deploy to EKS with Terraform
+- Add Horizontal Pod Autoscaling 
+- Add Ingress resource with NGINX
 
 ## Author
 ### Lulu Osofisan
